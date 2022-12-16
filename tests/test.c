@@ -6,8 +6,7 @@
 #include <structs.h>
 #include <string.h>
 #include <inttypes.h>
-#include "Read.h"
-#include "Write.h"
+#include "VGF.h"
 
 struct dataType1{
     int uwu;
@@ -19,6 +18,8 @@ struct dataType1{
 int main(void){
 
     printf("Hello VGF\n");
+
+
 
     struct dataType1 mainData[2];
     mainData[0].uwu = 42069;
@@ -34,14 +35,16 @@ int main(void){
     VGF *writeFile = VGF_W_InitFile("test.vgf");
     VGF_W_AddChunk(writeFile, "vec1", &mainData[0], sizeof(struct dataType1), 2);
     VGF_W_WriteToFile(writeFile);
+    VGF_W_Close(writeFile);
+
 
 
     VGF *file = VGF_R_InitFile("test.vgf");
 
     int numberChunks = 0;
     struct dataType1 *foundType = VGF_R_readChunk(file, "vec1", &numberChunks);
-    printf("Got: %d %f %d %c\n", foundType[0].uwu, foundType[0].owo, foundType[0].owo2, foundType[0].aChar);
-    printf("Got: %d %f %d %c\n", foundType[1].uwu, foundType[1].owo, foundType[1].owo2, foundType[1].aChar);
+    printf("Got: %d %f %lu %c\n", foundType[0].uwu, foundType[0].owo, foundType[0].owo2, foundType[0].aChar);
+    printf("Got: %d %f %lu %c\n", foundType[1].uwu, foundType[1].owo, foundType[1].owo2, foundType[1].aChar);
     free(foundType);
 
     VGF_R_closeFile(file);

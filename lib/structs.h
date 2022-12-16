@@ -11,7 +11,7 @@
 #define VGF_SIZEOF_SIG 4
 
 #define VGF_VERSION 1
-#define VGF_WATERMARK "Made with libVGF version 1.0"
+#define VGF_WATERMARK "Made with libVGF version 1.0a"
 #define VGF_WATERMARK_LEN (strlen(VGF_WATERMARK) * sizeof(char))
 
 // Signature

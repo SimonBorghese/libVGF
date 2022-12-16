@@ -31,14 +31,15 @@ int VGF_W_AddChunk(VGF *file, const char *chunkName, void *data, int sizePerChun
     int _targetChunk = file->fChunks.numChunks - 1;
     struct VGF_chunk *_currentChunk = &file->fChunks.chunks[_targetChunk];
 
-    _currentChunk->chunkName = (char*) malloc(sizeof(char) * strlen(chunkName));
+    _currentChunk->chunkName = (char*) malloc((sizeof(char) * strlen(chunkName)) + 1);
     strcpy(_currentChunk->chunkName, chunkName);
 
     _currentChunk->numSubChunks = chunkCount;
     _currentChunk->chunkSize = sizePerChunk;
-    _currentChunk->chunkNameLen = strlen(chunkName) * sizeof(char);
+    _currentChunk->chunkNameLen = (strlen(chunkName) * sizeof(char)) + 1;
     _currentChunk->data = data;
     //_currentChunk->chunkOffset: // Set offset later/don't need/can't use
+    return 1;
 }
 
 int VGF_W_WriteToFile(VGF* file){
@@ -57,6 +58,7 @@ int VGF_W_WriteToFile(VGF* file){
         struct VGF_chunk *_currentChunk = &file->fChunks.chunks[c];
         _currentChunk->chunkOffset = currentOffset;
         currentOffset += _currentChunk->chunkSize * _currentChunk->numSubChunks;
+
         fwrite(&_currentChunk->chunkNameLen, sizeof(int), 1, file->fVGF);
         fwrite(&_currentChunk->chunkName[0], sizeof(char), _currentChunk->chunkNameLen, file->fVGF);
         fwrite(&_currentChunk->chunkOffset, sizeof(int), 1, file->fVGF);
@@ -70,4 +72,13 @@ int VGF_W_WriteToFile(VGF* file){
 
     fflush(file->fVGF);
     fclose(file->fVGF);
+    return 1;
+}
+int VGF_W_Close(VGF* file){
+    for (int c = 0; c < file->fChunks.numChunks; c++) {
+        free(file->fChunks.chunks[c].chunkName);
+    }
+    free(file->fChunks.chunks);
+    free(file);
+    return 1;
 }

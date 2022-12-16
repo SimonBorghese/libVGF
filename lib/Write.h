@@ -13,4 +13,6 @@ int VGF_W_AddChunk(VGF *file, const char *chunkName, void *data, int sizePerChun
 
 int VGF_W_WriteToFile(VGF* file);
 
+int VGF_W_Close(VGF* file);
+
 #endif //LIBVGF_WRITE_H

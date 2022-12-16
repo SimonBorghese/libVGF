@@ -29,7 +29,6 @@ VGF* VGF_R_InitFile(const char *filename){
     fseek(_New->fVGF, _New->fHeader.offsetToInfo, SEEK_SET);
     // Read number of chunks
     fread(&_New->fChunks.numChunks, sizeof(int), 1, _New->fVGF);
-    printf("Num chunks: %d\n", _New->fChunks.numChunks);
     // Allocate enough VGF_Chunks for the amount in the file
     _New->fChunks.chunks = (struct VGF_chunk*) (malloc(sizeof(struct VGF_chunk) * _New->fChunks.numChunks));
     // Read Each Chunk
@@ -57,6 +56,7 @@ int VGF_R_getNumSubChunks(VGF *file, const char *chunkName) { return _VGF_getChu
 
 void* VGF_R_readChunk(VGF *file, const char *chunkName, int *numChunks){
     struct VGF_chunk *_chunk = _VGF_getChunk(file, chunkName);
+    assert(_chunk);
     fseek(file->fVGF, _chunk->chunkOffset, SEEK_SET);
 
     void *_chunkData = malloc(_chunk->chunkSize * _chunk->numSubChunks);
@@ -76,4 +76,6 @@ int VGF_R_closeFile(VGF *file){
     free(file->fChunks.chunks);
 
     free(file);
+
+    return 1;
 }
